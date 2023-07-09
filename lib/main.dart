@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shoping_app/global_variables.dart';
 import 'package:shoping_app/home_page.dart';
-import 'package:shoping_app/product_details_page.dart';
 
 void main() {
   runApp(const MyApp());
