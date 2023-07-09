@@ -19,6 +19,19 @@ class _HomePageState extends State<HomePage> {
     selectedFilters = filters[0];
   }
 
+  Color getProductCardBackGroundColor(int index) {
+    if (index.isEven) {
+      return const Color.fromRGBO(216, 240, 253, 1);
+    } else {
+      return const Color.fromRGBO(245, 247, 249, 1);
+    }
+  }
+
+  selectFilters(String filter) {
+    selectedFilters = filter;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     const border = OutlineInputBorder(
@@ -34,8 +47,6 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: SafeArea(
         child: Column(
-          // mainAxisAlignment: MainAxisAlignment.center,
-          // crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Row(
               children: [
@@ -72,8 +83,7 @@ class _HomePageState extends State<HomePage> {
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: GestureDetector(
                       onTap: () {
-                        selectedFilters = filter;
-                        setState(() {});
+                        selectFilters(filter);
                       },
                       child: Chip(
                         backgroundColor: (selectedFilters == filter)
@@ -103,13 +113,12 @@ class _HomePageState extends State<HomePage> {
                   itemCount: products.length,
                   itemBuilder: (context, index) {
                     final product = products[index];
+
                     return ProductCardWidget(
                       productName: "${product["title"]}",
                       price: "${product["price"]}",
                       imageUrl: "${product["imageUrl"]}",
-                      backgroundColor: index.isEven
-                          ? const Color.fromRGBO(216, 240, 253, 1)
-                          : const Color.fromRGBO(245, 247, 249, 1),
+                      backgroundColor: getProductCardBackGroundColor(index),
                     );
                   }),
             )
