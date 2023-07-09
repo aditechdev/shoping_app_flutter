@@ -37,16 +37,13 @@ class _HomePageState extends State<HomePage> {
           // mainAxisAlignment: MainAxisAlignment.center,
           // crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Row(
+             Row(
               children: [
                 Padding(
                   padding: EdgeInsets.all(20.0),
                   child: Text(
                     "Shoes\nCollection",
-                    style: TextStyle(
-                      fontSize: 35,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
                 Expanded(
