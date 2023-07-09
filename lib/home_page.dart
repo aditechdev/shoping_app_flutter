@@ -12,15 +12,15 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int currentPage = 0;
 
-  final List<Widget> pages = [
-    const ProductList(),
-    const CartPage(),
-  ];
+  final List<Widget> pages = const [ProductList(), CartPage()];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
+        iconSize: 35,
+        selectedFontSize: 0,
+        unselectedFontSize: 0,
         currentIndex: currentPage,
         onTap: (value) {
           setState(() {
@@ -38,7 +38,10 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: pages[currentPage],
+      body: IndexedStack(
+        index: currentPage,
+        children: pages,
+      ),
     );
   }
 }
