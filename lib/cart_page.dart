@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:shoping_app/global_variables.dart';
+import 'package:provider/provider.dart';
+import 'package:shoping_app/cart_provider.dart';
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final cart = Provider.of<CartProvider>(context).cart;
     var theme = Theme.of(context);
     var textTheme = theme.textTheme;
     return Scaffold(

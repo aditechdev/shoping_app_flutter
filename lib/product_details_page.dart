@@ -1,4 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shoping_app/cart_provider.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   final Map<String, dynamic> product;
@@ -14,11 +18,48 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   @override
   void initState() {
     super.initState();
+    deselectSize();
+  }
+
+  addToCart() {
+    if (selectedSize == -1) {
+      return ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          duration: Duration(milliseconds: 500),
+          content: Text("Please Select a size!")));
+    }
+
+    Provider.of<CartProvider>(context, listen: false).addProduct({
+      'id': widget.product["id"],
+      'title': widget.product["title"],
+      'price': widget.product["price"],
+      'imageUrl': widget.product["imageUrl"],
+      'company': widget.product["company"],
+      'size': selectedSize,
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        duration: Duration(milliseconds: 500),
+        content: Text("Product added successfully!")));
+
+    // widget.product
+  }
+
+  selectSize(int size) {
+    if (selectedSize == size) {
+      deselectSize();
+    } else {
+      selectedSize = size;
+    }
+    setState(() {});
+  }
+
+  deselectSize() {
     selectedSize = -1;
   }
 
   @override
   Widget build(BuildContext context) {
+    log("LISSTTTTT => ${Provider.of<CartProvider>(context).cart}");
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     final size = widget.product["sizes"];
@@ -70,9 +111,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         padding: const EdgeInsets.all(8.0),
                         child: GestureDetector(
                           onTap: () {
-                            setState(() {
-                              selectedSize = size[index];
-                            });
+                            selectSize(size[index]);
                           },
                           child: Chip(
                             backgroundColor: (selectedSize == size[index])
@@ -95,7 +134,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         minimumSize: const Size(double.infinity, 50)),
-                    onPressed: () {},
+                    onPressed: addToCart,
                     icon: const Icon(
                       Icons.shopping_cart,
                       color: Colors.black,
