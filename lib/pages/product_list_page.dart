@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:shoping_app/global_variables.dart';
-import 'package:shoping_app/product_card.dart';
-import 'package:shoping_app/product_details_page.dart';
+import 'package:shoping_app/widgets/product_card.dart';
+import 'package:shoping_app/pages/product_details_page.dart';
 
-class ProductList extends StatefulWidget {
-  const ProductList({super.key});
+class ProductListPage extends StatefulWidget {
+  const ProductListPage({super.key});
 
   @override
-  State<ProductList> createState() => _ProductListState();
+  State<ProductListPage> createState() => _ProductListPageState();
 }
 
-class _ProductListState extends State<ProductList> {
+class _ProductListPageState extends State<ProductListPage> {
   final List<String> filters = const ['All', 'Addidas', 'Nike', 'Bata'];
   late String selectedFilters;
 
