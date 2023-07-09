@@ -9,34 +9,33 @@ class CartPage extends StatelessWidget {
     var theme = Theme.of(context);
     var textTheme = theme.textTheme;
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("CART"),
-        ),
-        body: ListView.builder(
-            itemCount: cart.length,
-            itemBuilder: (context, index) {
-              var cartItem = cart[index];
-              return ListTile(
-              
-                leading: CircleAvatar(
-                  backgroundImage: AssetImage(
-                    cartItem["imageUrl"] as String,
-                  ),
-                  radius: 30,
-                ),
-                title: Text(
-                  cartItem["title"] as String,
-                  style: textTheme.bodySmall,
-                ),
-                subtitle: Text("Size: ${cartItem["size"]}"),
-                trailing: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.delete),
-                  color: Colors.red,
-                ),
-              );
-
-              // Text(["title"] as String);
-            }));
+      appBar: AppBar(
+        title: const Text("CART"),
+      ),
+      body: ListView.builder(
+        itemCount: cart.length,
+        itemBuilder: (context, index) {
+          var cartItem = cart[index];
+          return ListTile(
+            leading: CircleAvatar(
+              backgroundImage: AssetImage(
+                cartItem["imageUrl"] as String,
+              ),
+              radius: 30,
+            ),
+            title: Text(
+              cartItem["title"] as String,
+              style: textTheme.bodySmall,
+            ),
+            subtitle: Text("Size: ${cartItem["size"]}"),
+            trailing: IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.delete),
+              color: Colors.red,
+            ),
+          );
+        },
+      ),
+    );
   }
 }
