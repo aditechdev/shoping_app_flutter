@@ -1,8 +1,5 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shoping_app/global_variables.dart';
 import 'package:shoping_app/pages/product_details_page.dart';
 import 'package:shoping_app/providers/products_provider.dart';
 import 'package:shoping_app/widgets/product_card.dart';
@@ -16,32 +13,27 @@ class ProductListPage extends StatefulWidget {
 
 class _ProductListPageState extends State<ProductListPage> {
   final List<String> filters = const ['All', 'Addidas', 'Nike', 'Bata'];
-  late String selectedFilters;
 
   @override
   void initState() {
     super.initState();
-    selectedFilters = filters[0];
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _asyncMethod();
+    });
   }
 
-  Color getProductCardBackGroundColor(int index) {
-    if (index.isEven) {
-      return const Color.fromRGBO(216, 240, 253, 1);
-    } else {
-      return const Color.fromRGBO(245, 247, 249, 1);
-    }
+  _asyncMethod() {
+    context.read<ProductProvider>().querryProductList();
   }
 
   selectFilters(String filter) {
-    selectedFilters = filter;
-    setState(() {});
-    log("-------------------> $selectedFilters");
-    context.read<ProductProvider>().querryProductList(company: selectedFilters);
+    context.read<ProductProvider>().selectedFilter = filter;
   }
 
   @override
   Widget build(BuildContext context) {
-    var productsList = context.watch<ProductProvider>().getProductList;
+    var productProvider = context.watch<ProductProvider>();
+    var productsList = productProvider.getProductList;
 
     const border = OutlineInputBorder(
         borderSide: BorderSide(
@@ -95,9 +87,10 @@ class _ProductListPageState extends State<ProductListPage> {
                       selectFilters(filter);
                     },
                     child: Chip(
-                      backgroundColor: (selectedFilters == filter)
-                          ? Theme.of(context).colorScheme.primary
-                          : const Color.fromRGBO(245, 247, 249, 1),
+                      backgroundColor:
+                          (productProvider.getSelectedFilter == filter)
+                              ? Theme.of(context).colorScheme.primary
+                              : const Color.fromRGBO(245, 247, 249, 1),
                       side: const BorderSide(
                         color: Color.fromRGBO(245, 247, 249, 1),
                       ),
@@ -126,51 +119,21 @@ class _ProductListPageState extends State<ProductListPage> {
                       crossAxisCount: 2, childAspectRatio: 1.75),
                   itemBuilder: (context, index) {
                     final product = productsList[index];
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return ProductDetailsPage(
-                                product: product,
-                              );
-                            },
-                          ),
-                        );
-                      },
-                      child: ProductCardWidget(
-                        productName: "${product["title"]}",
-                        price: "${product["price"]}",
-                        imageUrl: "${product["imageUrl"]}",
-                        backgroundColor: getProductCardBackGroundColor(index),
-                      ),
+                    return ProductListItemWidget(
+                      product: product,
+                      index: index,
                     );
                   },
                 );
               } else {
                 return ListView.builder(
-                  itemCount: products.length,
+                  itemCount: productsList.length,
                   itemBuilder: (context, index) {
-                    final product = products[index];
+                    final product = productsList[index];
 
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return ProductDetailsPage(
-                                product: product,
-                              );
-                            },
-                          ),
-                        );
-                      },
-                      child: ProductCardWidget(
-                        productName: "${product["title"]}",
-                        price: "${product["price"]}",
-                        imageUrl: "${product["imageUrl"]}",
-                        backgroundColor: getProductCardBackGroundColor(index),
-                      ),
+                    return ProductListItemWidget(
+                      product: product,
+                      index: index,
                     );
                   },
                 );
@@ -182,5 +145,42 @@ class _ProductListPageState extends State<ProductListPage> {
         ],
       ),
     );
+  }
+}
+
+class ProductListItemWidget extends StatelessWidget {
+  const ProductListItemWidget({super.key, required this.product, this.index});
+  final Map<String, dynamic> product;
+  final int? index;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) {
+              return ProductDetailsPage(
+                product: product,
+              );
+            },
+          ),
+        );
+      },
+      child: ProductCardWidget(
+        productName: "${product["title"]}",
+        price: "${product["price"]}",
+        imageUrl: "${product["imageUrl"]}",
+        backgroundColor: getProductCardBackGroundColor(index!),
+      ),
+    );
+  }
+
+  Color getProductCardBackGroundColor(int index) {
+    if (index.isEven) {
+      return const Color.fromRGBO(216, 240, 253, 1);
+    } else {
+      return const Color.fromRGBO(245, 247, 249, 1);
+    }
   }
 }
