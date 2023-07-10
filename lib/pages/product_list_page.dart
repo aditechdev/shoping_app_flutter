@@ -35,7 +35,6 @@ class _ProductListPageState extends State<ProductListPage> {
 
   @override
   Widget build(BuildContext context) {
-
     const border = OutlineInputBorder(
         borderSide: BorderSide(
           color: Color.fromRGBO(
@@ -52,13 +51,11 @@ class _ProductListPageState extends State<ProductListPage> {
         children: [
           Row(
             children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Text(
-                    "Shoes\nCollection",
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(
+                  "Shoes\nCollection",
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
               const Expanded(
