@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shoping_app/providers/cart_provider.dart';
@@ -59,7 +57,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    log("LISSTTTTT => ${Provider.of<CartProvider>(context).cart}");
+    // log("LISSTTTTT => ${Provider.of<CartProvider>(context).cart}");
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     final size = widget.product["sizes"];

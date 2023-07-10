@@ -37,7 +37,16 @@ class CartPage extends StatelessWidget {
                     cartItem["title"] as String,
                     style: textTheme.bodySmall,
                   ),
-                  subtitle: Text("Size: ${cartItem["size"]}"),
+                  subtitle: Row(
+                    children: [
+                      Text("Size: ${cartItem["size"]}"),
+                      // const SizedBox(
+                      //   width: 5,
+                      // ),
+                      const Spacer(),
+                      Text("Count: ${cartItem["count"]}"),
+                    ],
+                  ),
                   trailing: IconButton(
                     onPressed: () {
                       showDialog(
