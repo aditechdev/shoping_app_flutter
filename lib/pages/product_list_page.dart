@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shoping_app/global_variables.dart';
 import 'package:shoping_app/pages/product_details_page.dart';
+import 'package:shoping_app/providers/products_provider.dart';
 import 'package:shoping_app/widgets/product_card.dart';
 
 class ProductListPage extends StatefulWidget {
@@ -31,10 +35,14 @@ class _ProductListPageState extends State<ProductListPage> {
   selectFilters(String filter) {
     selectedFilters = filter;
     setState(() {});
+    log("-------------------> $selectedFilters");
+    context.read<ProductProvider>().querryProductList(company: selectedFilters);
   }
 
   @override
   Widget build(BuildContext context) {
+    var productsList = context.watch<ProductProvider>().getProductList;
+
     const border = OutlineInputBorder(
         borderSide: BorderSide(
           color: Color.fromRGBO(
@@ -113,11 +121,11 @@ class _ProductListPageState extends State<ProductListPage> {
             child: LayoutBuilder(builder: (context, constraints) {
               if (constraints.maxWidth > 1080) {
                 return GridView.builder(
-                  itemCount: products.length,
+                  itemCount: productsList.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2, childAspectRatio: 1.75),
                   itemBuilder: (context, index) {
-                    final product = products[index];
+                    final product = productsList[index];
                     return GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(
