@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shoping_app/global_variables.dart';
-import 'package:shoping_app/widgets/product_card.dart';
 import 'package:shoping_app/pages/product_details_page.dart';
+import 'package:shoping_app/widgets/product_card.dart';
 
 class ProductListPage extends StatefulWidget {
   const ProductListPage({super.key});
@@ -35,6 +35,8 @@ class _ProductListPageState extends State<ProductListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     const border = OutlineInputBorder(
         borderSide: BorderSide(
           color: Color.fromRGBO(
@@ -45,16 +47,19 @@ class _ProductListPageState extends State<ProductListPage> {
           ),
         ),
         borderRadius: BorderRadius.horizontal(left: Radius.circular(50)));
+
     return SafeArea(
       child: Column(
         children: [
           Row(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Text(
-                  "Shoes\nCollection",
-                  style: Theme.of(context).textTheme.titleLarge,
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Text(
+                    "Shoes\nCollection",
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
                 ),
               ),
               const Expanded(
@@ -109,31 +114,66 @@ class _ProductListPageState extends State<ProductListPage> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-                itemCount: products.length,
-                itemBuilder: (context, index) {
-                  final product = products[index];
-
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          // fullscreenDialog: true,
-                          // allowSnapshotting: true,
-
-                          builder: (context) {
-                        return ProductDetailsPage(
-                          product: product,
+            child: LayoutBuilder(builder: (context, constraints) {
+              if (constraints.maxWidth > 1080) {
+                return GridView.builder(
+                  itemCount: products.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, childAspectRatio: 1.75),
+                  itemBuilder: (context, index) {
+                    final product = products[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return ProductDetailsPage(
+                                product: product,
+                              );
+                            },
+                          ),
                         );
-                      }));
-                    },
-                    child: ProductCardWidget(
-                      productName: "${product["title"]}",
-                      price: "${product["price"]}",
-                      imageUrl: "${product["imageUrl"]}",
-                      backgroundColor: getProductCardBackGroundColor(index),
-                    ),
-                  );
-                }),
+                      },
+                      child: ProductCardWidget(
+                        productName: "${product["title"]}",
+                        price: "${product["price"]}",
+                        imageUrl: "${product["imageUrl"]}",
+                        backgroundColor: getProductCardBackGroundColor(index),
+                      ),
+                    );
+                  },
+                );
+              } else {
+                return ListView.builder(
+                  itemCount: products.length,
+                  itemBuilder: (context, index) {
+                    final product = products[index];
+
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return ProductDetailsPage(
+                                product: product,
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      child: ProductCardWidget(
+                        productName: "${product["title"]}",
+                        price: "${product["price"]}",
+                        imageUrl: "${product["imageUrl"]}",
+                        backgroundColor: getProductCardBackGroundColor(index),
+                      ),
+                    );
+                  },
+                );
+              }
+
+              // const Text("data");
+            }),
           )
         ],
       ),

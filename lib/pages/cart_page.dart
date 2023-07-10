@@ -14,74 +14,82 @@ class CartPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text("CART"),
       ),
-      body: ListView.builder(
-        itemCount: cart.length,
-        itemBuilder: (context, index) {
-          var cartItem = cart[index];
-          return ListTile(
-            leading: CircleAvatar(
-              backgroundImage: AssetImage(
-                cartItem["imageUrl"] as String,
-              ),
-              radius: 30,
-            ),
-            title: Text(
-              cartItem["title"] as String,
-              style: textTheme.bodySmall,
-            ),
-            subtitle: Text("Size: ${cartItem["size"]}"),
-            trailing: IconButton(
-              onPressed: () {
-                showDialog(
-                    barrierDismissible: false,
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: Text(
-                          "Delete product",
-                          style: textTheme.titleMedium,
-                        ),
-                        content: const Text(
-                          "Are you sure, you want to remove the product from cart?",
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text(
-                              "No",
-                              style: TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.bold,
+      body: (cart.isEmpty)
+          ? const Center(
+              child: Icon(
+              Icons.free_breakfast,
+              color: Colors.black,
+            ))
+          : ListView.builder(
+              itemCount: cart.length,
+              itemBuilder: (context, index) {
+                // log("--------------------> $cart");
+
+                var cartItem = cart[index];
+                return ListTile(
+                  leading: CircleAvatar(
+                    backgroundImage: AssetImage(
+                      cartItem["imageUrl"] as String,
+                    ),
+                    radius: 30,
+                  ),
+                  title: Text(
+                    cartItem["title"] as String,
+                    style: textTheme.bodySmall,
+                  ),
+                  subtitle: Text("Size: ${cartItem["size"]}"),
+                  trailing: IconButton(
+                    onPressed: () {
+                      showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text(
+                                "Delete product",
+                                style: textTheme.titleMedium,
                               ),
-                            ),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              context
-                                  .read<CartProvider>()
-                                  .removeProduct(cartItem);
-                              Navigator.pop(context);
-                            },
-                            child: const Text(
-                              "Yes",
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
+                              content: const Text(
+                                "Are you sure, you want to remove the product from cart?",
                               ),
-                            ),
-                          ),
-                        ],
-                      );
-                    });
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text(
+                                    "No",
+                                    style: TextStyle(
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    context
+                                        .read<CartProvider>()
+                                        .removeProduct(cartItem);
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text(
+                                    "Yes",
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          });
+                    },
+                    icon: const Icon(Icons.delete),
+                    color: Colors.red,
+                  ),
+                );
               },
-              icon: const Icon(Icons.delete),
-              color: Colors.red,
             ),
-          );
-        },
-      ),
     );
   }
 }

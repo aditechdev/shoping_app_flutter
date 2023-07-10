@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class ProductCardWidget extends StatelessWidget {
-  const ProductCardWidget(
-      {super.key,
-      required this.imageUrl,
-      required this.price,
-      required this.productName, required this.backgroundColor,});
+  const ProductCardWidget({
+    super.key,
+    required this.imageUrl,
+    required this.price,
+    required this.productName,
+    required this.backgroundColor,
+  });
   final String productName;
   final String imageUrl;
   final String price;
@@ -40,7 +42,7 @@ class ProductCardWidget extends StatelessWidget {
           Center(
             child: Image.asset(
               imageUrl,
-              height: 175,
+              height: 165,
             ),
           ),
         ],
