@@ -30,6 +30,24 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void searchProduct(String q) {
+    List<Map<String, dynamic>> data = [];
+    if (q.trim().isEmpty) {
+      data = products;
+    } else {
+      data = products
+          .where((e) => e['company']
+              .toString()
+              .toLowerCase()
+              .contains(q.trim().toLowerCase()))
+          .toList();
+    }
+
+    clearProduct();
+    _productProvider.addAll(data);
+    notifyListeners();
+  }
+
   clearProduct() {
     _productProvider.clear();
   }

@@ -12,14 +12,22 @@ class ProductListPage extends StatefulWidget {
 }
 
 class _ProductListPageState extends State<ProductListPage> {
+  late TextEditingController _searchController;
   final List<String> filters = const ['All', 'Addidas', 'Nike', 'Bata'];
 
   @override
   void initState() {
     super.initState();
+    _searchController = TextEditingController();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _asyncMethod();
     });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   _asyncMethod() {
@@ -28,6 +36,16 @@ class _ProductListPageState extends State<ProductListPage> {
 
   selectFilters(String filter) {
     context.read<ProductProvider>().selectedFilter = filter;
+  }
+
+  searchProduct(String? q) {
+    context.read<ProductProvider>().searchProduct(q!);
+  }
+
+  clearTextField() {
+   _searchController.clear();
+    FocusManager.instance.primaryFocus?.unfocus();
+    selectFilters(context.read<ProductProvider>().getSelectedFilter);
   }
 
   @override
@@ -46,103 +64,114 @@ class _ProductListPageState extends State<ProductListPage> {
         ),
         borderRadius: BorderRadius.horizontal(left: Radius.circular(50)));
 
-    return SafeArea(
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Text(
-                  "Shoes\nCollection",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-              ),
-              const Expanded(
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: "Search",
-                    border: border,
-                    enabledBorder: border,
-                    focusedBorder: border,
-                    prefixIcon: Icon(
-                      Icons.search,
-                    ),
+    return GestureDetector(
+      onTap: () {
+        clearTextField();
+      
+      },
+      child: SafeArea(
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Text(
+                    "Shoes\nCollection",
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
-              )
-            ],
-          ),
-          SizedBox(
-            height: 120,
-            child: ListView.builder(
-              itemCount: filters.length,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
-                final filter = filters[index];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: GestureDetector(
-                    onTap: () {
-                      selectFilters(filter);
+                Expanded(
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: (value) {
+                      searchProduct(value);
                     },
-                    child: Chip(
-                      backgroundColor:
-                          (productProvider.getSelectedFilter == filter)
-                              ? Theme.of(context).colorScheme.primary
-                              : const Color.fromRGBO(245, 247, 249, 1),
-                      side: const BorderSide(
-                        color: Color.fromRGBO(245, 247, 249, 1),
-                      ),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30)),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 15,
-                      ),
-                      labelStyle: const TextStyle(fontSize: 16),
-                      label: Text(
-                        filter,
+                    decoration: const InputDecoration(
+                      hintText: "Search",
+                      border: border,
+                      enabledBorder: border,
+                      focusedBorder: border,
+                      prefixIcon: Icon(
+                        Icons.search,
                       ),
                     ),
                   ),
-                );
-              },
+                )
+              ],
             ),
-          ),
-          Expanded(
-            child: LayoutBuilder(builder: (context, constraints) {
-              if (constraints.maxWidth > 1080) {
-                return GridView.builder(
-                  itemCount: productsList.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, childAspectRatio: 1.75),
-                  itemBuilder: (context, index) {
-                    final product = productsList[index];
-                    return ProductListItemWidget(
-                      product: product,
-                      index: index,
-                    );
-                  },
-                );
-              } else {
-                return ListView.builder(
-                  itemCount: productsList.length,
-                  itemBuilder: (context, index) {
-                    final product = productsList[index];
+            SizedBox(
+              height: 120,
+              child: ListView.builder(
+                itemCount: filters.length,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                  final filter = filters[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: GestureDetector(
+                      onTap: () {
+                        selectFilters(filter);
+                      },
+                      child: Chip(
+                        backgroundColor:
+                            (productProvider.getSelectedFilter == filter)
+                                ? Theme.of(context).colorScheme.primary
+                                : const Color.fromRGBO(245, 247, 249, 1),
+                        side: const BorderSide(
+                          color: Color.fromRGBO(245, 247, 249, 1),
+                        ),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30)),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 15,
+                        ),
+                        labelStyle: const TextStyle(fontSize: 16),
+                        label: Text(
+                          filter,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            Expanded(
+              child: LayoutBuilder(builder: (context, constraints) {
+                if (constraints.maxWidth > 1080) {
+                  return GridView.builder(
+                    itemCount: productsList.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2, childAspectRatio: 1.75),
+                    itemBuilder: (context, index) {
+                      final product = productsList[index];
+                      return ProductListItemWidget(
+                        product: product,
+                        index: index,
+                      );
+                    },
+                  );
+                } else {
+                  return ListView.builder(
+                    itemCount: productsList.length,
+                    itemBuilder: (context, index) {
+                      final product = productsList[index];
 
-                    return ProductListItemWidget(
-                      product: product,
-                      index: index,
-                    );
-                  },
-                );
-              }
+                      return ProductListItemWidget(
+                        product: product,
+                        index: index,
+                      );
+                    },
+                  );
+                }
 
-              // const Text("data");
-            }),
-          )
-        ],
+                // const Text("data");
+              }),
+            )
+          ],
+        ),
       ),
     );
   }
